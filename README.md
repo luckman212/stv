@@ -57,7 +57,7 @@ You should see a list of states, with the following columns of information:
 
 - `stv '%267%'` to output states associated with rule 267 (try `pfctl -vvsr` to obtain the internal pf ruleIDs)
 - `stv ESTAB` to only print active states
-- `stv `:4443 '` port 4443
+- `stv ':4443 '` port 4443
 - `stv '%igc[0-2]%'` show states related to igc0, igc1 and igc2
 
 Since all output is standardized and each state is printed on a single line, output from **stv** is well-suited to piping into other tools such as grep or awk.
