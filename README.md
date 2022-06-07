@@ -25,7 +25,7 @@ exit
 
 ### Use stv
 
-Using stv is easy. Just drop to a shell and type
+Using stv is easy. Just drop to a shell and type:
 ```shell
 stv
 ```
@@ -39,6 +39,8 @@ You should see a list of states, with the following columns of information:
 - state description (`ESTABLISHED`, `FIN_WAIT` etc)
 - "talkers" - a term I made up to represent the hosts involved
 - gateway (only shown if it's not the default)
+
+> stv works best on a wide (>170 columns or more) terminal.
 
 ### Filtering
 
