@@ -43,6 +43,16 @@ You should see a list of states, with the following columns of information:
 
 > **stv** works best on a wide (>170 columns or more) terminal.
 
+## Getting Rule Descriptions from IDs
+
+**stv** has a built in helper function to convert numeric ruleid's into whatever you've entered in pfSense as the rule description. This can help identify what rule is triggering a state when debugging.
+
+Use `stv --rule <id>` to use this function. Example:
+```
+# stv --rule 110
+let out anything from firewall host itself
+```
+
 ## Filtering
 
 **stv** accepts a single optional parameter which can be used to filter the results to those matching a particular interface, rule ID, state type, IP address etc. The argument is a regex (regular expression).
