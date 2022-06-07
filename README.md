@@ -4,7 +4,7 @@
 
 `stv` is a **S**tate **T**able **V**iewer for [pfSense](https://github.com/pfsense/pfsense/). It's meant to be used at the commandline (console or ssh). **stv** leverages `pfctl` and `awk` to generate its output.
 
-### Why
+## Why
 
 [Troubleshooting firewall rules](https://docs.netgate.com/pfsense/en/latest/troubleshooting/firewall.html) can be tricky. There are some good tools included to help, like pfTop, trafshow, iftop, tcpdump and others.
 
@@ -24,7 +24,7 @@ chmod +x /root/bin/stv
 rehash
 ```
 
-### Using stv
+## Using stv
 
 Using **stv** is easy. Just drop to a shell and type:
 ```shell
@@ -43,13 +43,13 @@ You should see a list of states, with the following columns of information:
 
 > **stv** works best on a wide (>170 columns or more) terminal.
 
-### Filtering
+## Filtering
 
 **stv** accepts a single optional parameter which can be used to filter the results to those matching a particular interface, rule ID, state type, IP address etc. The argument is a regex (regular expression).
 
 Pad the search string with `#`'s to make it explicit, otherwise it will be treated as a substring match.
 
-#### Examples
+### Examples
 
 - `stv #267#` to output states associated with rule 267 (try `pfctl -vvsr` to obtain the internal pf ruleIDs)
 - `stv ESTAB` to only print active states
@@ -59,11 +59,11 @@ Since all output is standardized and each state is printed on a single line, out
 
 **stv** will print the total number of matching states at the bottom of the output.
 
-### Continuous Monitoring
+## Continuous Monitoring
 
 To have a "live" updating display, you can use `cmdwatch` (recommended) or a simple shell loop.
 
-#### cmdwatch method
+### cmdwatch method
 
 step 1
 ```shell
@@ -75,7 +75,7 @@ step 2
 cmdwatch 'stv #5201#'
 ```
 
-#### shell loop method
+### shell loop method
 
 ```
 while :; do clear; stv '#5201#'; sleep 2; done
