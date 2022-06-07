@@ -17,7 +17,7 @@ Still, I found myself struggling to get the output I wanted: a list of states wh
 3. paste the commands below to download `stv`, make it executable and put it in your path.
 ```
 mkdir /root/bin
-fetch -o /root/bin/stv https://raw.githubusercontent.com/luckman212/stv/main/stv
+fetch -o /root/bin/stv https://github.com/luckman212/stv/releases/download/1.0.0/stv
 chmod +x /root/bin/stv
 exit
 ```
