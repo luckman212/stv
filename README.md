@@ -8,7 +8,7 @@
 
 Still, I found myself struggling to get the output I wanted: a list of states where everything was reasonably structured, and every state occupied just a single line (so it can be further piped to grep, awk etc)
 
-stv achieves this.
+**stv** achieves this.
 
 ### Get stv
 
