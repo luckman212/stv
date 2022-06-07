@@ -55,3 +55,20 @@ Pad the search string with `#`'s to make it explicit, otherwise it will be treat
 Since all output is standardized and each state is printed on a single line, output from `stv` is well-suited to piping into other tools such as grep or awk.
 
 stv will print the total number of matching states at the bottom of the output.
+
+### Continuous Monitoring
+
+To have a "live" updating display, you can use `cmdwatch` (recommended) or a simple shell loop.
+
+#### cmdwatch method
+
+```
+pkg add https://pkg.freebsd.org/FreeBSD:12:amd64/latest/All/cmdwatch-0.2.0_2.txz
+cmdwatch 'stv #5201#'
+```
+
+#### shell loop method
+
+```
+while :; do clear; stv '#5201#'; sleep 2; done
+```
