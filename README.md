@@ -1,4 +1,4 @@
-![](./steve.png)
+<img src=steve.png width=128>
 
 # stv
 
