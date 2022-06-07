@@ -73,8 +73,7 @@ pkg add https://pkg.freebsd.org/FreeBSD:12:amd64/latest/All/cmdwatch-0.2.0_2.txz
 cmdwatch --interval=2 'stv %5201%'
 ```
 
-If you'd rather not install the additional command, you can also use a simple shell loop.
-
+If you prefer not to install any additional packages, you can use a simple shell loop instead:
 ```
 while :; do clear; stv '%icmp.*tun_wg1%'; sleep 2; done
 ```
