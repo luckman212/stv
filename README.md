@@ -15,7 +15,7 @@ stv achieves this.
 3. paste the commands below to download `stv`, make it executable and put it in your path.
 ```
 mkdir /root/bin
-fetch xxx -o /root/bin/stv
+fetch -o /root/bin/stv https://raw.githubusercontent.com/luckman212/stv/main/stv
 chmod +x /root/bin/stv
 exit
 ```
@@ -24,15 +24,23 @@ exit
 
 Using stv is easy. Just drop to a shell and type
 ```shell
-stv
+stv [search_term]
 ```
 You should see a list of states, with the following columns of information 
 
 - protocol (`tcp, udp, icmp`...)
 - direction (in/out)
 - interface that the state was generated on
+- rule id associated with the state
 - state/creator ID (can be used to uniquely identify, and thus kill, a state)
 - state description (`ESTABLISHED`, `FIN_WAIT` etc)
 - "talkers" - a term I made up to represent the hosts involved
 - gateway (only shown if it's not the default)
 
+### Filtering
+
+`stv` accepts a single optional parameter which can be used to filter the results to those matching a particular interface, rule ID, state type, IP address etc. Pad the search string with `|`s e.g. `|267|` for rule 267.
+
+Since all output is standardized and each state is printed on a single line, output from `stv` is well-suited to piping into other tools such as grep or awk.
+
+stv will print the total number of matching states at the bottom of the output.
