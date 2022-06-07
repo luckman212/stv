@@ -72,7 +72,7 @@ pkg add https://pkg.freebsd.org/FreeBSD:12:amd64/latest/All/cmdwatch-0.2.0_2.txz
 
 2. run
 ```shell
-cmdwatch 'stv %5201%'
+cmdwatch --interval=2 'stv %5201%'
 ```
 
 ### shell loop method
