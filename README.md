@@ -1,4 +1,4 @@
-<img src=steve.png width=128>
+<img src="steve.png" width="128" onclick="javascript;">
 
 # stv
 
