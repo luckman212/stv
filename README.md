@@ -61,7 +61,7 @@ Since all output is standardized and each state is printed on a single line, out
 
 Here's a sample screenshot showing NFS port 2049:
 
-<img src="screenshot.png" width="800">
+<img src="screenshot.png" width="1024">
 
 ## Continuous Monitoring
 
