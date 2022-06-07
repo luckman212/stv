@@ -16,7 +16,7 @@ Still, I found myself struggling to get the output I wanted: a list of states wh
 
 1. connect to your pfSense instance using ssh or via the console.
 2. select option **8**.
-3. paste the commands below to download **stv** and load it into the shell `$PATH`.
+3. paste the commands below to download **stv** and prepare it for execution:
 ```
 mkdir /root/bin
 fetch -o /root/bin/stv https://github.com/luckman212/stv/releases/download/1.0.0/stv
