@@ -1,5 +1,21 @@
 #!/bin/sh
 
+if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
+    echo "usage: $(basename $0) [--rule <ruleid>] [filter_regex]"
+    exit
+fi
+
+if [ "$1" == "--rule" ]; then
+    if [ "$2" != "" ]; then
+        /sbin/pfctl -vvsr |
+        /usr/local/bin/perl -ne "print if s|^\@${2}.*? label \"(USER_RULE: )?(.*?)\".*$|\2|p"
+        exit
+    else
+        echo "you must specify a rule id after --rule"
+        exit 1
+    fi
+fi
+
 /sbin/pfctl -vvss |
 /usr/bin/awk -v m="$1" '
     BEGIN {
