@@ -1,10 +1,10 @@
 # stv
 
-`stv (pronounced _"Steve"_ is a **S**tate **T**able **V**iewer for pfSense. It's meant to be used at the commandline (console or ssh). stv uses pfctl and awk to generate its output.
+`stv` (pronounced _"Steve"_ is a **S**tate **T**able **V**iewer for pfSense. It's meant to be used at the commandline (console or ssh). stv uses pfctl and awk to generate its output.
 
 ### Why
 
-Troubleshooting firewall rules can be tricky. There are some good tools included to help, like pfTop, trafshow, iftop, tcpdump and others. Still, I found myself struggling to get the output I wanted: a list of states where everything was reasonably structured and every state occupied just a single line (so it can be further piped to grep, awk etc)
+[Troubleshooting firewall rules](https://docs.netgate.com/pfsense/en/latest/troubleshooting/firewall.html) can be tricky. There are some good tools included to help, like pfTop, trafshow, iftop, tcpdump and others. Still, I found myself struggling to get the output I wanted: a list of states where everything was reasonably structured and every state occupied just a single line (so it can be further piped to grep, awk etc)
 
 stv achieves this.
 
