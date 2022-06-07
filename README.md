@@ -38,8 +38,8 @@ You should see a list of states, with the following columns of information:
 - rule id associated with the state
 - state/creator ID (can be used to uniquely identify, and thus kill, a state)
 - state description (`ESTABLISHED`, `FIN_WAIT` etc)
-- "talkers" - a term I made up to represent the hosts involved
-- gateway (only shown if it's not the default)
+- "talkers" - the IPs and ports of the hosts involved
+- gateway (shown only if it's not the default)
 
 > **stv** works best on a wide (>170 columns or more) terminal.
 
