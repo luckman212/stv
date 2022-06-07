@@ -59,6 +59,10 @@ Since all output is standardized and each state is printed on a single line, out
 
 **stv** will print the total number of matching states at the bottom of the output.
 
+Here's a sample screenshot showing NFS port 2049:
+
+<img src="screenshot.png" width="1024">
+
 ## Continuous Monitoring
 
 To have a "live" updating display, you can use `cmdwatch`. This is the recommended method.
