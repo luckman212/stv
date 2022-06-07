@@ -1,3 +1,5 @@
+![](./steve.png)
+
 # stv
 
 `stv` (pronounced _"Steve"_) is a **S**tate **T**able **V**iewer for pfSense. It's meant to be used at the commandline (console or ssh). stv leverages `pfctl` and `awk` to generate its output.
