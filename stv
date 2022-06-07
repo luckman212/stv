@@ -1,7 +1,7 @@
 #!/bin/sh
 
-pfctl -vvss |
-awk -v m="$1" '
+/sbin/pfctl -vvss |
+/usr/bin/awk -v m="$1" '
     BEGIN {
         printf("%-14s %-8s %-4s %-26s %-24s %s\n",
         "proto/dir","iface","rule","state/creator","state","talkers");
@@ -12,12 +12,12 @@ awk -v m="$1" '
         rid=""; sid=""; gw=""; iface=""; talkers="";
         proto=$2; st=$NF;
         i=3; while (i<NF) {
-            talkers=sprintf("%s%s ",talkers,$i);
+            talkers=sprintf("%s%s ", talkers, $i);
             if($i=="->") { dir="out"; }
             if($i=="<-") { dir="in"; }
             i++;
         }
-        proto_dir=sprintf("%s %s", proto, dir);
+        proto_dir=sprintf("%s/%s", proto, dir);
         next;
     }
     {
@@ -44,10 +44,10 @@ awk -v m="$1" '
     }
     {
         #print "recno: "NR " output";
-        mm=sprintf("%%%s%%%s%%%s%%%s%%%s%%%s%%",proto_dir,iface,rid,sid,st,talkers,gw);
+        mm=sprintf("%%%s%%%s%%%s%%%s%%%s%%%s%%", proto_dir, iface, rid, sid, st, talkers, gw);
         if(mm ~ m) {
             printf "%-14s %-8s %-4s %-26s %-24s %s%s\n",
-            proto_dir,iface,rid,sid,st,talkers,gw;
+            proto_dir, iface, rid, sid, st, talkers, gw;
             cnt++;
         }
     }
