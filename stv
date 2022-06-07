@@ -4,7 +4,7 @@
 /usr/bin/awk -v m="$1" '
     BEGIN {
         printf("%-14s %-8s %-4s %-26s %-24s %s\n",
-        "proto/dir","iface","rule","state/creator","state","talkers");
+        "proto/dir", "iface", "rule", "state/creator", "state", "talkers");
         cnt=0;
     }
     !/^ / {
@@ -52,6 +52,6 @@
         }
     }
     END {
-        printf("%d state%s\n", cnt, (cnt==1 ? "":"s"));
+        printf("%d state%s\n", cnt, (cnt==1 ? "" : "s"));
     }
 '
