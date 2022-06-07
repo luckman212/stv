@@ -50,7 +50,7 @@ You should see a list of states, with the following columns of information:
 ### Tips
 
 - Pad the search string with `%`'s to make it explicit, otherwise it will be treated as a substring match.
-- When entering expressions with special characters like `[]` or `.*` it's best to enclose them in single quotes to avoid shell interpretation.
+- When entering expressions with special characters like `[]` or `.*` enclose them in single quotes to avoid shell interpretation.
 - To search for a literal `[` or `]`, use `\\[` and `\\]`
 
 ### Examples
