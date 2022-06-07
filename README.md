@@ -61,11 +61,9 @@ Since all output is standardized and each state is printed on a single line, out
 
 ## Continuous Monitoring
 
-To have a "live" updating display, you can use `cmdwatch` (recommended) or a simple shell loop.
+To have a "live" updating display, you can use `cmdwatch`. This is the recommended method.
 
-### cmdwatch method
-
-1. install cmdwatch
+1. install
 ```shell
 pkg add https://pkg.freebsd.org/FreeBSD:12:amd64/latest/All/cmdwatch-0.2.0_2.txz
 ```
@@ -75,7 +73,7 @@ pkg add https://pkg.freebsd.org/FreeBSD:12:amd64/latest/All/cmdwatch-0.2.0_2.txz
 cmdwatch --interval=2 'stv %5201%'
 ```
 
-### shell loop method
+If you'd rather not install the additional command, you can also use a simple shell loop.
 
 ```
 while :; do clear; stv '%icmp.*tun_wg1%'; sleep 2; done
