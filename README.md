@@ -39,7 +39,7 @@ You should see a list of states, with the following columns of information
 
 ### Filtering
 
-`stv` accepts a single optional parameter which can be used to filter the results to those matching a particular interface, rule ID, state type, IP address etc. Pad the search string with `#`'s e.g. `stv #267#` for rule 267.
+`stv` accepts a single optional parameter which can be used to filter the results to those matching a particular interface, rule ID, state type, IP address etc. Pad the search string with `#`'s e.g. `stv #267#` for rule 267 or `stv ESTAB` to only print active states.
 
 Since all output is standardized and each state is printed on a single line, output from `stv` is well-suited to piping into other tools such as grep or awk.
 
