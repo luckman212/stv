@@ -2,7 +2,7 @@
 
 <img src="steve.png" width="128">
 
-`stv` is a **S**tate **T**able **V**iewer for [pfSense](https://github.com/pfsense/pfsense/). It's meant to be used at the commandline (console or ssh). stv leverages `pfctl` and `awk` to generate its output.
+`stv` is a **S**tate **T**able **V**iewer for [pfSense](https://github.com/pfsense/pfsense/). It's meant to be used at the commandline (console or ssh). **stv** leverages `pfctl` and `awk` to generate its output.
 
 ### Why
 
@@ -12,7 +12,7 @@ Still, I found myself struggling to get the output I wanted: a list of states wh
 
 **stv** achieves this.
 
-### Get stv
+### Installing stv
 
 1. connect to pfSense using ssh or console.
 2. select option 8.
@@ -21,13 +21,12 @@ Still, I found myself struggling to get the output I wanted: a list of states wh
 mkdir /root/bin
 fetch -o /root/bin/stv https://github.com/luckman212/stv/releases/download/1.0.0/stv
 chmod +x /root/bin/stv
-exit
+rehash
 ```
-> _that last `exit` is required before using stv, so that the `$PATH` has a chance to update and recognize the new command._
 
-### Use stv
+### Using stv
 
-Using stv is easy. Just drop to a shell and type:
+Using **stv** is easy. Just drop to a shell and type:
 ```shell
 stv
 ```
