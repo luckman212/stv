@@ -50,7 +50,7 @@ fi
         if($1=="id:") {
             #print "recno: "NR " id";
             sid=sprintf("%s/%s", $2, $4);
-            gw=(($6=="0.0.0.0"||$6=="::") ? "" : sprintf(" (via %s)",$6));
+            gw=(($6=="0.0.0.0"||$6=="::") ? "" : sprintf("(via %s)",$6));
             next;
         }
         if($1=="origif:") {
