@@ -62,8 +62,13 @@ To have a "live" updating display, you can use `cmdwatch` (recommended) or a sim
 
 #### cmdwatch method
 
-```
+step 1
+```shell
 pkg add https://pkg.freebsd.org/FreeBSD:12:amd64/latest/All/cmdwatch-0.2.0_2.txz
+```
+
+step 2
+```shell
 cmdwatch 'stv #5201#'
 ```
 
