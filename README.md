@@ -12,7 +12,7 @@ Still, I found myself struggling to get the output I wanted: a list of states wh
 
 **stv** achieves this.
 
-### Installing stv
+## Installing stv
 
 1. connect to your pfSense instance using ssh or via the console.
 2. select option **8**.
