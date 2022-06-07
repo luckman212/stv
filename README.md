@@ -96,3 +96,5 @@ If you prefer not to install any additional packages, you can use a simple shell
 ```
 while :; do clear; stv '%icmp.*tun_wg1%'; sleep 2; done
 ```
+
+Press <kbd>⌃ctrl+c</kbd> to stop the loop.
