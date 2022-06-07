@@ -48,7 +48,7 @@ Pad the search string with `#`'s to make it explicit, otherwise it will be treat
 
 #### Examples
 
-- `stv #267#` to output states associated with rule 267
+- `stv #267#` to output states associated with rule 267 (try `pfctl -vvsr` to obtain the internal pf ruleIDs)
 - `stv ESTAB` to only print active states
 - `stv #igc[0-2]#` to show states related to igc0, igc1 and igc2
 
