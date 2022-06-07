@@ -3,7 +3,7 @@
 /sbin/pfctl -vvss |
 /usr/bin/awk -v m="$1" '
     BEGIN {
-        printf("%-14s %-8s %-4s %-26s %-24s %s\n",
+        printf("%-14s %-8s %-5s %-26s %-24s %s\n",
         "proto/dir", "iface", "rule", "state/creator", "state", "talkers");
         cnt=0;
     }
@@ -21,14 +21,14 @@
         next;
     }
     {
-        #print "recno: "NR " -- not a startblock";
+        #print "recno: "NR " -- processing "$0;
         if($0 ~ /\+/) {
             #print "recno: "NR " wscale";
             next;
         }
-        if($(NF-1)=="rule") {
+        if($1=="age") {
             #print "recno: "NR " rule";
-            rid=$NF;
+            rid=($(NF-1)=="rule") ? $NF : "none";
             next;
         }
         if($1=="id:") {
@@ -46,7 +46,7 @@
         #print "recno: "NR " output";
         mm=sprintf("%%%s%%%s%%%s%%%s%%%s%%%s%%", proto_dir, iface, rid, sid, st, talkers, gw);
         if(mm ~ m) {
-            printf "%-14s %-8s %-4s %-26s %-24s %s%s\n",
+            printf "%-14s %-8s %-5s %-26s %-24s %s%s\n",
             proto_dir, iface, rid, sid, st, talkers, gw;
             cnt++;
         }
