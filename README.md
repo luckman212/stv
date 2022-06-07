@@ -14,7 +14,7 @@ Still, I found myself struggling to get the output I wanted: a list of states wh
 
 1. connect to pfSense using ssh or console.
 2. select option 8.
-3. paste the commands below to download `stv`, make it executable and put it in your path.
+3. paste the commands below to download **stv**, make it executable and put it in your path.
 ```
 mkdir /root/bin
 fetch -o /root/bin/stv https://github.com/luckman212/stv/releases/download/1.0.0/stv
@@ -40,11 +40,11 @@ You should see a list of states, with the following columns of information:
 - "talkers" - a term I made up to represent the hosts involved
 - gateway (only shown if it's not the default)
 
-> stv works best on a wide (>170 columns or more) terminal.
+> **stv** works best on a wide (>170 columns or more) terminal.
 
 ### Filtering
 
-`stv` accepts a single optional parameter which can be used to filter the results to those matching a particular interface, rule ID, state type, IP address etc. The argument is a regex (regular expression).
+**stv** accepts a single optional parameter which can be used to filter the results to those matching a particular interface, rule ID, state type, IP address etc. The argument is a regex (regular expression).
 
 Pad the search string with `#`'s to make it explicit, otherwise it will be treated as a substring match.
 
@@ -54,7 +54,7 @@ Pad the search string with `#`'s to make it explicit, otherwise it will be treat
 - `stv ESTAB` to only print active states
 - `stv #igc[0-2]#` to show states related to igc0, igc1 and igc2
 
-Since all output is standardized and each state is printed on a single line, output from `stv` is well-suited to piping into other tools such as grep or awk.
+Since all output is standardized and each state is printed on a single line, output from  is well-suited to piping into other tools such as grep or awk.
 
 stv will print the total number of matching states at the bottom of the output.
 
