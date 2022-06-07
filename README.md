@@ -29,7 +29,7 @@ Using stv is easy. Just drop to a shell and type
 ```shell
 stv
 ```
-You should see a list of states, with the following columns of information 
+You should see a list of states, with the following columns of information:
 
 - protocol (`tcp, udp, icmp`...)
 - direction (in/out)
