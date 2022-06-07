@@ -1,6 +1,6 @@
 # stv
 
-`stv` (pronounced _"Steve"_ is a **S**tate **T**able **V**iewer for pfSense. It's meant to be used at the commandline (console or ssh). stv uses pfctl and awk to generate its output.
+`stv` (pronounced _"Steve"_ is a **S**tate **T**able **V**iewer for pfSense. It's meant to be used at the commandline (console or ssh). `stv` uses pfctl and awk to generate its output.
 
 ### Why
 
@@ -10,12 +10,20 @@ stv achieves this.
 
 ### Get stv
 
-.
+1. connect to pfSense using ssh or console.
+2. select option 8.
+3. paste the commands below to download `stv`, make it executable and put it in your path.
+```
+mkdir /root/bin
+fetch xxx -o /root/bin/stv
+chmod +x /root/bin/stv
+exit
+```
 
 ### Use stv
 
-Using stv is easy. Just type
-```
+Using stv is easy. Just drop to a shell and type
+```shell
 stv
 ```
 You should see a list of states, with the following columns of information 
