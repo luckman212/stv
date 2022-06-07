@@ -21,6 +21,7 @@ fetch -o /root/bin/stv https://raw.githubusercontent.com/luckman212/stv/main/stv
 chmod +x /root/bin/stv
 exit
 ```
+(that last exit is required before using stv, so that the $PATH has a chance to update and recognize the new command)
 
 ### Use stv
 
