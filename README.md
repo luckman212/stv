@@ -47,13 +47,13 @@ You should see a list of states, with the following columns of information:
 
 **stv** accepts a single optional parameter which can be used to filter the results to those matching a particular interface, rule ID, state type, IP address etc. The argument is a regex (regular expression).
 
-Pad the search string with `#`'s to make it explicit, otherwise it will be treated as a substring match.
+Pad the search string with `%`'s to make it explicit, otherwise it will be treated as a substring match.
 
 ### Examples
 
-- `stv #267#` to output states associated with rule 267 (try `pfctl -vvsr` to obtain the internal pf ruleIDs)
+- `stv %267%` to output states associated with rule 267 (try `pfctl -vvsr` to obtain the internal pf ruleIDs)
 - `stv ESTAB` to only print active states
-- `stv #igc[0-2]#` to show states related to igc0, igc1 and igc2
+- `stv %igc[0-2]%` to show states related to igc0, igc1 and igc2
 
 Since all output is standardized and each state is printed on a single line, output from **stv** is well-suited to piping into other tools such as grep or awk.
 
@@ -72,11 +72,11 @@ pkg add https://pkg.freebsd.org/FreeBSD:12:amd64/latest/All/cmdwatch-0.2.0_2.txz
 
 step 2
 ```shell
-cmdwatch 'stv #5201#'
+cmdwatch 'stv %5201%'
 ```
 
 ### shell loop method
 
 ```
-while :; do clear; stv '#5201#'; sleep 2; done
+while :; do clear; stv '%icmp.*tun_wg1%'; sleep 2; done
 ```
