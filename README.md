@@ -65,7 +65,7 @@ let out anything from firewall host itself
 
 ### Examples
 
-- `stv '%267%'` to output states associated with rule 267 (try `pfctl -vvsr` to obtain the internal pf ruleIDs)
+- `stv '%267%'` to output states associated with rule 267 (try `pfctl -vvsr` to list all rules along with the internal pf ruleIDs)
 - `stv ESTAB` to only print active states
 - `stv ':4443 '` port 4443
 - `stv '%igc[0-2]%'` show states related to igc0, igc1 and igc2
