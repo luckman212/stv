@@ -19,7 +19,7 @@ Still, I found myself struggling to get the output I wanted: a list of states wh
 3. paste the commands below to download **stv** and prepare it for execution:
 ```
 mkdir /root/bin
-fetch -o /root/bin/stv https://github.com/luckman212/stv/releases/download/1.1.2/stv
+fetch -o /root/bin/stv https://github.com/luckman212/stv/releases/download/1.1.3/stv
 chmod +x /root/bin/stv
 rehash
 ```
@@ -45,12 +45,15 @@ You should see a list of states, with the following columns of information:
 
 ## Getting Full Rule Descriptions from IDs
 
-**stv** has a built in helper function to convert numeric ruleid's into whatever you've entered in pfSense as the rule description. This can help identify what rule is triggering a state when debugging.
+**stv** has a built in helper function to search your pf-generated ruleset and output the rule id along with whatever you've entered in pfSense as a description. This can help identify what rule is triggering a state when debugging.
 
-Use `stv --rule <id>` to use this function. Example:
+Use `stv --rule <regex>` to use this function. Example:
 ```
-# stv --rule 110
-let out anything from firewall host itself
+# stv --rule ^110
+110	let out anything from firewall host itself
+# stv --rule block
+134	block SIP ! whitelisted
+135	block SIP ! whitelisted
 ```
 
 ## Filtering
