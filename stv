@@ -1,29 +1,57 @@
 #!/bin/sh
+#ver 1.1.0
 
-if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
-    echo "usage: $(basename $0) [--rule <ruleid>] [filter_regex]"
+_cacheupdate() {
+    if [ "$1" == "--force" ] || [ ! -e /tmp/stv_rulecache ]; then
+        echo -n "updating rule cache..."
+        /sbin/pfctl -vvsr | /usr/local/bin/perl -ne "print if s|^\@([0-9]+) .*? label \"(USER_RULE: )?(.*?)\".*$|\1\t\3|p" >/tmp/stv_rulecache
+        echo "done"
+    fi
+}
+
+case $1 in
+  --help|-h)
+    echo "usage: $(basename $0) [--cache] [--rule <ruleid>] [filter_regex]"
     exit
-fi
+    ;;
+  --cache)
+    _cacheupdate --force
+    exit
+    ;;
+esac
+
+_cacheupdate
 
 if [ "$1" == "--rule" ]; then
     if [ "$2" != "" ]; then
-        /sbin/pfctl -vvsr |
-        /usr/local/bin/perl -ne "print if s|^\@${2}.*? label \"(USER_RULE: )?(.*?)\".*$|\2|p"
+        /usr/bin/egrep "$2" /tmp/stv_rulecache
         exit
     else
-        echo "you must specify a rule id after --rule"
+        echo "you must specify a search pattern after --rule"
         exit 1
     fi
 fi
 
-/sbin/pfctl -vvss |
-/usr/bin/awk -v m="$1" '
+/sbin/pfctl -vvss >/tmp/stv_statecache
+
+awk -v m="$1" '
     BEGIN {
-        printf("%-14s %-8s %-5s %-26s %-24s %s\n",
+        printf("%-14s %-8s %-20s %-26s %-24s %s\n",
         "proto/dir", "iface", "rule", "state/creator", "state", "talkers");
         cnt=0;
     }
-    !/^ / {
+    fname != FILENAME {
+        fname = FILENAME; idx++
+    }
+    idx == 1 {
+        split($0,a,"\t");
+        rid = a[1];
+        desc = a[2];
+        rules[rid] = desc;
+        #printf("added rule %s: %s\n", rid, desc);
+        next;
+    }
+    idx == 2 && !/^ / {
         #print "recno: "NR " <== entrypoint";
         rid=""; sid=""; gw=""; iface=""; talkers="";
         proto=$2; st=$NF;
@@ -36,7 +64,7 @@ fi
         proto_dir=sprintf("%s/%s", proto, dir);
         next;
     }
-    {
+    idx == 2 {
         #print "recno: "NR " -- processing "$0;
         if($0 ~ /\+/) {
             #print "recno: "NR " wscale";
@@ -44,7 +72,7 @@ fi
         }
         if($1=="age") {
             #print "recno: "NR " rule";
-            rid=($(NF-1)=="rule") ? $NF : "none";
+            rid=($(NF-1)=="rule") ? sprintf("%s:%s", $NF, substr(rules[$NF], 1, 14)) : "none";
             next;
         }
         if($1=="id:") {
@@ -58,11 +86,11 @@ fi
             iface=$2;
         }
     }
-    {
+    idx == 2 {
         #print "recno: "NR " output";
         mm=sprintf("%%%s%%%s%%%s%%%s%%%s%%%s%%", proto_dir, iface, rid, sid, st, talkers, gw);
         if(mm ~ m) {
-            printf "%-14s %-8s %-5s %-26s %-24s %s%s\n",
+            printf "%-14s %-8s %-20s %-26s %-24s %s%s\n",
             proto_dir, iface, rid, sid, st, talkers, gw;
             cnt++;
         }
@@ -70,4 +98,4 @@ fi
     END {
         printf("%d state%s\n", cnt, (cnt==1 ? "" : "s"));
     }
-'
+    ' /tmp/stv_rulecache /tmp/stv_statecache

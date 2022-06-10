@@ -19,7 +19,7 @@ Still, I found myself struggling to get the output I wanted: a list of states wh
 3. paste the commands below to download **stv** and prepare it for execution:
 ```
 mkdir /root/bin
-fetch -o /root/bin/stv https://github.com/luckman212/stv/releases/download/1.0.4/stv
+fetch -o /root/bin/stv https://github.com/luckman212/stv/releases/download/1.1.0/stv
 chmod +x /root/bin/stv
 rehash
 ```
@@ -35,7 +35,7 @@ You should see a list of states, with the following columns of information:
 - protocol (`tcp, udp, icmp`...)
 - direction (in/out)
 - interface that the state was generated on
-- rule id associated with the state
+- rule associated with the state (id & first few chars of description)
 - state/creator ID (uniquely identifies a state—you can then kill it with `pfctl -k id -k <id>`)
 - state description (`ESTABLISHED`, `FIN_WAIT` etc)
 - "talkers" - the IPs and ports of the hosts involved
@@ -43,7 +43,7 @@ You should see a list of states, with the following columns of information:
 
 > **stv** works best on a wide (>170 columns or more) terminal.
 
-## Getting Rule Descriptions from IDs
+## Getting Full Rule Descriptions from IDs
 
 **stv** has a built in helper function to convert numeric ruleid's into whatever you've entered in pfSense as the rule description. This can help identify what rule is triggering a state when debugging.
 
