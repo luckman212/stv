@@ -1,10 +1,10 @@
 #!/bin/sh
-#ver 1.1.1
+#ver 1.1.2
 
 _cacheupdate() {
     if [ "$1" == "--force" ] || [ ! -e /tmp/stv_rulecache ]; then
         echo -n "updating rule cache..."
-        /sbin/pfctl -vvsr | /usr/local/bin/perl -ne "print if s|^\@([0-9]+) .*? label \"(USER_RULE: )?(.*?)\".*$|\1\t\3|p" >/tmp/stv_rulecache
+        /sbin/pfctl -vvsr | /usr/local/bin/perl -ne "print if s|^\@([0-9]+).*? label \"(USER_RULE: )?(.*?)\".*$|\1\t\3|p" >/tmp/stv_rulecache
         echo "done"
     fi
 }
