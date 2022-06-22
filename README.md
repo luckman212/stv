@@ -58,10 +58,11 @@ Use `stv --rule <regex>` to use this function. Example:
 
 ## Filtering
 
-**stv** accepts a single optional parameter which can be used to filter the results to those matching a particular interface, rule ID, state type, IP address etc. The argument is a regex (regular expression).
+**stv** accepts an optional parameter which can be used to filter the results to those matching a particular interface, rule ID, state type, IP address etc. The argument is a regex (regular expression).
 
 ### Tips
 
+- run `stv -h` for usage help
 - Pad the search string with `%`'s to make it explicit, otherwise it will be treated as a substring match.
 - When entering expressions with special characters like `[]` or `.*` enclose them in single quotes to avoid shell interpretation.
 - To search for a literal `[` or `]`, use `\\[` and `\\]`
