@@ -1,36 +1,56 @@
 #!/bin/sh
-#ver 1.1.3
+ver=1.2.0
 
 _cacheupdate() {
-    if [ "$1" == "--force" ] || [ ! -e /tmp/stv_rulecache ]; then
-        echo -n "updating rule cache..."
+    if [ "$1" == "--force" ]; then
+        echo "updating rule cache..." >&2
+        /bin/rm /tmp/stv_rulecache
+    fi
+    last_ts=$(/usr/bin/stat -f%c /tmp/stv_rulecache 2>/dev/null || echo 0)
+    now=$(/bin/date +%s)
+    elapsed=$(( now - last_ts ))
+    if [ $elapsed -gt 300 ] || [ ! -e /tmp/stv_rulecache ]; then
         /sbin/pfctl -vvsr | /usr/local/bin/perl -ne "print if s|^\@([0-9]+).*? label \"(USER_RULE: )?(.*?)\".*$|\1\t\3|p" >/tmp/stv_rulecache
-        echo "done"
     fi
 }
 
 case $1 in
   --help|-h)
-    echo "usage: $(/usr/bin/basename $0) [--cache] [--rule <search_regex>] [filter_regex]"
+    echo "usage: $(/usr/bin/basename $0) [options] [filter_regex]"
+    echo
+    echo "	-h, --help        display this help"
+    echo "	-v, --version     print version"
+    echo "	-c, --cache       force update of rule cache (also auto-updates every 5m)"
+    echo "	-r, --rule <qry>  search rules based on <qry> (regex)"
+    echo
+    echo "	for more info, visit: https://github.com/luckman212/stv"
     exit
     ;;
-  --cache)
+  --version|-v)
+    echo "v${ver}"
+    latest=$(/usr/bin/fetch -T5 -qo- 'https://raw.githubusercontent.com/luckman212/stv/main/version' 2>/dev/null)
+    if [ -n "$latest" ] && [ "$ver" != "$latest" ]; then
+        echo "new version available: v${latest}"
+    fi
+    exit
+    ;;
+  --cache|-c)
     _cacheupdate --force
     exit
     ;;
-esac
-
-_cacheupdate
-
-if [ "$1" == "--rule" ]; then
+  --rule|-r)
     if [ "$2" != "" ]; then
-        /usr/bin/egrep "$2" /tmp/stv_rulecache
+        _cacheupdate
+        /usr/bin/grep -E "$2" /tmp/stv_rulecache
         exit
     else
         echo "you must specify a search pattern after --rule"
         exit 1
     fi
-fi
+    ;;
+esac
+
+_cacheupdate
 
 /sbin/pfctl -vvss >/tmp/stv_statecache
 
