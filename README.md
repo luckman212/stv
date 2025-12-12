@@ -92,7 +92,7 @@ To have a "live" updating display, you can use `cmdwatch`. This is the recommend
 
 1. install
 ```shell
-pkg add https://pkg.freebsd.org/FreeBSD:12:amd64/latest/All/cmdwatch-0.2.0_2.txz
+pkg add -f https://pkg.freebsd.org/FreeBSD:16:amd64/latest/All/cmdwatch-0.2.0_3.pkg
 ```
 
 2. run
