@@ -2,6 +2,8 @@
 
 <img src="steve.png" width="128">
 
+⚠️ `stv` needs an update to be compatible with the new output format of `pfctl` in pfSense version 2.9 (or 25.11+). I am working on this and will release an update shortly!
+
 `stv` is a **S**tate **T**able **V**iewer for [pfSense](https://github.com/pfsense/pfsense/). It's meant to be used at the commandline (console or ssh). **stv** leverages `pfctl` and `awk` to generate its output.
 
 ## Why
