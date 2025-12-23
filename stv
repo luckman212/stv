@@ -1,36 +1,112 @@
 #!/bin/sh
-ver=1.2.0
+
+VER='1.3.0'
+RULECACHE='/tmp/stv_rulecache'
+STATECACHE='/tmp/stv_statecache'
+COL_MODE=1
 
 _cacheupdate() {
-    if [ "$1" == "--force" ]; then
-        echo "updating rule cache..." >&2
-        /bin/rm /tmp/stv_rulecache
+    if [ "$1" = "--force" ]; then
+        echo "updating rule cache" >&2
+        rm "$RULECACHE"
     fi
-    last_ts=$(/usr/bin/stat -f%c /tmp/stv_rulecache 2>/dev/null || echo 0)
-    now=$(/bin/date +%s)
+    last_ts=$(stat -f%c "$RULECACHE" 2>/dev/null || echo 0)
+    now=$(date +%s)
     elapsed=$(( now - last_ts ))
-    if [ $elapsed -gt 300 ] || [ ! -e /tmp/stv_rulecache ]; then
-        /sbin/pfctl -vvsr | /usr/local/bin/perl -ne "print if s|^\@([0-9]+).*? label \"(USER_RULE: )?(.*?)\".*$|\1\t\3|p" >/tmp/stv_rulecache
+    if [ $elapsed -gt 300 ] || [ ! -e "$RULECACHE" ]; then
+        pfctl -vvsr | awk '
+        function trim(s) {
+            sub(/^[[:space:]]*/, "", s);
+            sub(/[[:space:]]*$/, "", s);
+            sub(",", "", s);
+            return s;
+        }
+        function stripquotes(s) {
+            gsub("\"", "", s);
+            return s;
+        }
+        BEGIN { OFS="\t" } /^@/ {
+            rid=iface=port=rdesc=proto1=proto2="";
+            rnum=$1; sub("@", "", rnum);
+            action=$2;
+            quick=allow_opts=0;
+            if(action=="block" || action=="match" || action=="pass") {
+                i=3; while (i<NF) {
+                    if($i=="on") {
+                        if($(i+1)=="!") { iface="!" $(i+2); }
+                        else { iface=$(i+1); }
+                    }
+                    if($i=="quick") { quick=1; }
+                    if($i=="inet") { proto1="v4"; }
+                    if($i=="inet6") { proto1="v6"; }
+                    if($i=="proto") { proto2=$(i+1); }
+                    if($i=="port") {
+                        if($(i+1)=="=") { port=$(i+2); }
+                        else { port=$(i+1); }
+                    }
+                    if($i=="allow-opts") { allow_opts=1; }
+                    if($i=="ridentifier") { rid=$(i+1); }
+                    if($i ~ /^"descr=/) {
+                        ii=i;
+                        while (ii<NF) {
+                            rdesc=sprintf("%s %s", rdesc, $ii);
+                            if($ii ~ /"$/) { break; }
+                            else { ii++; }
+                        }
+                        rdesc=stripquotes(rdesc);
+                        rdesc=trim(rdesc);
+                        sub(/^descr=/, "", rdesc);
+                    }
+                    i++;
+                }
+                print rnum, rid, iface, action, quick, allow_opts, proto1, proto2, port, rdesc;
+            }
+        }' > "$RULECACHE"
     fi
 }
 
+_cv() {
+    echo "$1" | awk '{
+        sub(/^v/,"");
+        split($0, a, ".");
+        vc=(a[1]*10000+a[2]*100+a[3]);
+        print vc;
+    }'
+}
+
+_sanitycheck() {
+    kver=$(uname -K)
+    if [ "$kver" -lt 1600000 ]; then
+        echo "this version of stv requires pfSense+ 25.11/CE 2.9.0 or higher" >&2
+        echo "please upgrade your system and try again" >&2
+        exit 1
+    fi
+}
+
+_sanitycheck
+
 case $1 in
   --help|-h)
-    echo "usage: $(/usr/bin/basename $0) [options] [filter_regex]"
+    echo "usage: $(basename $0) [options] [filter_regex]"
     echo
     echo "	-h, --help        display this help"
     echo "	-v, --version     print version"
     echo "	-c, --cache       force update of rule cache (also auto-updates every 5m)"
     echo "	-r, --rule <qry>  search rules based on <qry> (regex)"
+    echo "	-t, --tab         tab-delimited output (otherwise format in columns)"
     echo
     echo "	for more info, visit: https://github.com/luckman212/stv"
     exit
     ;;
   --version|-v)
-    echo "v${ver}"
-    latest=$(/usr/bin/fetch -T5 -qo- 'https://raw.githubusercontent.com/luckman212/stv/main/version' 2>/dev/null)
-    if [ -n "$latest" ] && [ "$ver" != "$latest" ]; then
-        echo "new version available: v${latest}"
+    echo "v${VER}"
+    gh_raw=$(fetch -T5 -qo- 'https://raw.githubusercontent.com/luckman212/stv/main/version' 2>/dev/null)
+    if [ -n "$gh_raw" ]; then
+        gh_cv=$(_cv "$gh_raw")
+        cur_cv=$(_cv "$VER")
+        if [ "$cur_cv" -lt "$gh_cv" ]; then
+            echo "new version available: v${gh_raw}"
+        fi
     fi
     exit
     ;;
@@ -38,10 +114,30 @@ case $1 in
     _cacheupdate --force
     exit
     ;;
+  --tab|-t)
+    COL_MODE=0
+    shift
+    ;;
   --rule|-r)
-    if [ "$2" != "" ]; then
+    if [ -n "$2" ]; then
         _cacheupdate
-        /usr/bin/grep -E "$2" /tmp/stv_rulecache
+        awk -v m="$2" 'BEGIN { FS="\t"; c=0 } {
+            if($1==m || $3==m || $4==m || $7==m || $8==m || $9==m ||
+              (m=="quick" && $5==1) ||
+              (m=="allow-opts" && $6==1) ||
+              tolower($10) ~ tolower(m)) {
+                c++;
+                if(c>1) { print ""; }
+                printf("%-12s: %s\n", "rule num", $1);
+                if($2) { printf("%-12s: %s\n", "rule id", $2); }
+                if($3) { printf("%-12s: %s\n", "interface", $3); }
+                printf("%-12s: %s\n", "action", $4 ($5 ? " (quick)" : ""));
+                if($6) { printf("%-12s: %s\n", "allow-opts", "yes"); }
+                if($7) { printf("%-12s: %s\n", "proto", $7 ($8 ? "/"$8 : "")); }
+                if($9) { printf("%-12s: %s\n", "port", $9); }
+                if($10) { printf("%-12s: %s\n", "description", $10); }
+            }
+        }' "$RULECACHE"
         exit
     else
         echo "you must specify a search pattern after --rule"
@@ -52,12 +148,42 @@ esac
 
 _cacheupdate
 
-/sbin/pfctl -vvss >/tmp/stv_statecache
+pfctl -vvss > "$STATECACHE"
 
-/usr/bin/awk -v m="$1" '
+awk -v m="$1" '
+    function dbg(str) {
+        if (ENVIRON["DEBUG"]) {
+            printf("%s\n", str) > "/dev/stderr";
+        }
+    }
+    function process() {
+        mm=sprintf("%%%s%%%s%%%s%%%s%%%s%%%s%%%s%%", proto_dir, iface, rnum, rdesc, sid, st, talkers);
+        if(tolower(mm) ~ tolower(m)) {
+            if(rt) { talkers_rt = sprintf("%s %s", talkers, rt); }
+            else { talkers_rt = talkers; }
+            print proto_dir, iface, rdisp, sid, st, talkers_rt;
+            cnt++;
+        }
+        rnum=rid=rdesc=rdisp=sid=iface=talkers=rt=talkers_rt="";
+    }
+    function trim(s) {
+        sub(/^[[:space:]]*/, "", s);
+        sub(/[[:space:]]*$/, "", s);
+        sub(",", "", s);
+        return s;
+    }
+    function words(s,n) {
+        w=split(s,warr," ");
+        out=warr[1];
+        i=2; while (i<=n && i<=w) {
+            out=sprintf("%s %s", out, warr[i]);
+            i++;
+        }
+        return out;
+    }
     BEGIN {
-        printf("%-14s %-8s %-20s %-26s %-24s %s\n",
-        "proto/dir", "iface", "rule", "state/creator", "state", "talkers");
+        OFS="\t";
+        print "proto/dir", "iface", "rule", "state/creator", "state", "talkers";
         cnt=0;
     }
     fname != FILENAME {
@@ -65,63 +191,73 @@ _cacheupdate
     }
     idx == 1 {
         split($0,a,"\t");
-        rid = a[1];
-        desc = a[2];
-        rules[rid] = desc;
-        #printf("added rule %s: %s\n", rid, desc);
+        rnum = a[1];
+        rid = a[2];
+        iface = a[3];
+        action = a[4];
+        quick = a[5];
+        allow_opts = a[6];
+        proto1 = a[7];
+        proto2 = a[8];
+        port = a[9];
+        rdesc = a[10];
+        rules[rnum] = rdesc;
+        rids[rnum] = rid;
+        dbg(sprintf("added rule #%s (rid=%s): %s", rnum, rid, (rdesc ? rdesc : "<no description>")));
         next;
     }
     idx == 2 && !/^ / {
-        #print "recno: "NR " <== entrypoint";
-        rid=""; rdesc=""; rdisp=""; sid=""; gw=""; iface=""; talkers="";
-        proto=$2; st=$NF;
+        process()
+        entrypoint=NR; #future
+        iface=$1;
+        proto=$2;
+        st=$NF;
+        split($NF,st_arr,":");
+        if(st_arr[1]==st_arr[2]) { st=st_arr[1]; }
+        if(st=="0" || st=="NO_TRAFFIC") { st="NO_TRAFFIC (icmp)"; }
         i=3; while (i<NF) {
-            talkers=sprintf("%s%s ", talkers, $i);
+            talkers=sprintf("%s %s", talkers, $i);
             if($i=="->") { dir="out"; }
             if($i=="<-") { dir="in"; }
             i++;
         }
+        talkers=trim(talkers);
         proto_dir=sprintf("%s/%s", proto, dir);
         next;
     }
-    idx == 2 {
-        #print "recno: "NR " -- processing "$0;
-        if($0 ~ /\+/) {
-            #print "recno: "NR " wscale";
-            next;
-        }
+    idx == 2 && /^ / {
         if($1=="age") {
-            #print "recno: "NR " rule";
-            if($(NF-1)=="rule") {
-                rid=$NF;
-                rdesc=rules[$NF];
-                rdisp=sprintf("%s:%s", rid, substr(rdesc, 1, 14));
+            if($12=="rule") {
+                rnum=trim($13);
+                rdesc=rules[rnum];
+                rid=rids[rnum];
+                rdisp=sprintf("%s%s", rnum, (rdesc ? ":" words(rdesc,3) : ""));
             } else {
                 rdisp="none";
             }
             next;
         }
         if($1=="id:") {
-            #print "recno: "NR " id";
+            #state id seems to always end with 00000000
+            #substr($2, 1, 8) would truncate it, but pfctl -k id requires them, so...
             sid=sprintf("%s/%s", $2, $4);
-            gw=(($6=="0.0.0.0"||$6=="::") ? "" : sprintf("(via %s)",$6));
+            if(NF>4) {
+                if ($5=="route-to:") { rt=sprintf("(→%s)",$6); }
+                else if ($5=="reply-to:") { rt=sprintf("(↩%s)",$6); }
+                else { rt=""; }
+            }
             next;
         }
         if($1=="origif:") {
-            #print "recno: "NR " origif";
-            iface=$2;
-        }
-    }
-    idx == 2 {
-        #print "recno: "NR " output";
-        mm=sprintf("%%%s%%%s%%%s%%%s%%%s%%%s%%%s%%", proto_dir, iface, rid, rdesc, sid, st, talkers, gw);
-        if(mm ~ m) {
-            printf "%-14s %-8s %-20s %-26s %-24s %s%s\n",
-            proto_dir, iface, rdisp, sid, st, talkers, gw;
-            cnt++;
+            iface=sprintf("%s <- %s", iface, $2);
+            next;
         }
     }
     END {
         printf("%d state%s\n", cnt, (cnt==1 ? "" : "s"));
-    }
-    ' /tmp/stv_rulecache /tmp/stv_statecache
+    }' "$RULECACHE" "$STATECACHE" |
+if [ $COL_MODE -eq 1 ]; then
+    column -s $'\t' -t
+else
+    cat
+fi
