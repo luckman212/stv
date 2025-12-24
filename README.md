@@ -72,7 +72,7 @@ port        : domain-s
 description : Block DoH/DoT
 ```
 Here's the "source" of that rule, directly from pfctl:
-```txt
+```text
 # pfctl -vvsr | grep @288
 @288 block drop in log quick on LANS inet6 proto udp from any to <h_anycast_DNS_servers:19> port = domain-s label "id=1763924300" label "tags=user_rule" label "descr=Block DoH/DoT" ridentifier 1763924300
 ```
