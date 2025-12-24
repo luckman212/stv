@@ -61,7 +61,7 @@ Use `stv --rule <query>` to use this function. You can specify the following as 
 - a **regex** to match the description e.g. `traefik` or `allow.*(traefik|icmp)`
 
 Examples:
-```
+```text
 # stv --rule 288
 rule num    : 288
 rule id     : 1763924300
