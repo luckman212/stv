@@ -2,7 +2,7 @@
 
 <img src="steve.png" width="128">
 
-⚠️ `stv` 1.3.0 has been rewritten to handle the new output format of `pfctl` bundled with pfSense version 2.9/25.11. Anyone running an older version should continue to use version [1.2.0](https://github.com/luckman212/stv/releases/tag/1.2.0).
+⚠️ `stv` 1.3 has been rewritten to handle the new output format of `pfctl` bundled with pfSense version 2.9/25.11. Anyone running an older version should continue to use version [1.2.0](https://github.com/luckman212/stv/releases/tag/1.2.0).
 
 ## What
 
@@ -52,7 +52,7 @@ You should see a list of states, with the following columns of information:
 
 Use `stv --rule <query>` to use this function. You can specify the following as a query string:
 
-- an **integer** to match a specific rule by number
+- an **integer** to match a specific rule by number (or long pf ruleid)
 - an **interface** name e.g. `ix1`
 - an **action**: `block`, `pass`, `match`
 - a **port** name or number e.g. `http` or `8080`
